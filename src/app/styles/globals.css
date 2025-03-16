@@ -8,7 +8,7 @@
   }
 
   body {
-    @apply body1 font-regular text-ti-default-main;
+    @apply body1 font-regular text-black;
     @apply min-h-full;
     -webkit-font-smoothing: antialiased;
     -ms-text-size-adjust: 100%;
@@ -26,6 +26,40 @@
 }
 
 @layer components {
+  .largeTitle {
+    @apply font-inter text-size-largeTitle font-bold leading-largeTitle;
+  }
+  .title1 {
+    @apply font-inter text-size-title1 font-bold leading-title1;
+  }
+  .title2 {
+    @apply font-inter text-size-title2 font-bold leading-title2;
+  }
+  .title3 {
+    @apply font-inter text-size-title3 font-semibold leading-title3;
+  }
+  .headline {
+    @apply font-inter text-size-headline font-semibold leading-headline;
+  }
+  .subHeadline {
+    @apply font-inter text-size-subHeadline font-bold leading-subHeadline;
+  }
+  .body1 {
+    @apply font-inter text-size-body1 leading-body1;
+  }
+  .body2 {
+    @apply font-inter text-size-body2 leading-body2;
+  }
+  .footNote {
+    @apply font-inter text-size-footNote leading-footNote;
+  }
+  .overlineText {
+    @apply font-inter text-size-overline uppercase leading-overline tracking-[.12em];
+    text-decoration: none !important;
+  }
+  .caption {
+    @apply font-inter text-size-caption leading-caption;
+  }
 }
 
 @layer utilities {

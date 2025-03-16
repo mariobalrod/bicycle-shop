@@ -3,6 +3,8 @@
 ## Getting Started
 
 ```bash
+nvm use
+
 # Install dependencies
 pnpm install
 
