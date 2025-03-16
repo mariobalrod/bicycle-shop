@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-    provider  = "postgresql"
-    url       = env("POSTGRES_URL")
-    directUrl = env("POSTGRES_URL_NON_POOLING")
+    provider = "postgresql"
+    url      = env("POSTGRES_URL")
 }
 
 // Necessary for Next auth
@@ -55,4 +54,125 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Product {
+    id          String          @id @default(cuid())
+    name        String
+    description String?
+    price       Float
+    type        ProductType
+    createdAt   DateTime        @default(now())
+    updatedAt   DateTime        @updatedAt
+    isActive    Boolean         @default(true)
+    categories  Category[]
+    options     ProductOption[]
+    cartItems   CartItem[]
+}
+
+enum ProductType {
+    BICYCLE
+    SKI
+    SURFBOARD
+    ROLLER_SKATE
+}
+
+model Category {
+    id          String    @id @default(cuid())
+    name        String
+    description String?
+    products    Product[]
+    options     Option[]
+}
+
+model Option {
+    id             String          @id @default(cuid())
+    name           String // Ex: "Frame type", "Wheel type"
+    description    String?
+    category       Category        @relation(fields: [categoryId], references: [id])
+    categoryId     String
+    values         OptionValue[]
+    productOptions ProductOption[]
+}
+
+model OptionValue {
+    id             String               @id @default(cuid())
+    name           String // Ex: "Full-suspension", "Diamond"
+    description    String?
+    option         Option               @relation(fields: [optionId], references: [id])
+    optionId       String
+    isAvailable    Boolean              @default(true)
+    restrictions   OptionRestriction[]  @relation("OptionValueRestrictions")
+    restrictedBy   OptionRestriction[]  @relation("RestrictedTo")
+    productOptions ProductOptionValue[]
+    CartItemOption CartItemOption[]
+}
+
+model OptionRestriction {
+    id                String          @id @default(cuid())
+    optionValue       OptionValue     @relation("OptionValueRestrictions", fields: [optionValueId], references: [id])
+    optionValueId     String
+    restrictedValue   OptionValue     @relation("RestrictedTo", fields: [restrictedValueId], references: [id])
+    restrictedValueId String
+    type              RestrictionType
+
+    @@unique([optionValueId, restrictedValueId])
+}
+
+enum RestrictionType {
+    INCOMPATIBLE
+    REQUIRED
+}
+
+model ProductOption {
+    id             String               @id @default(cuid())
+    product        Product              @relation(fields: [productId], references: [id])
+    productId      String
+    option         Option               @relation(fields: [optionId], references: [id])
+    optionId       String
+    values         ProductOptionValue[]
+    isRequired     Boolean              @default(true)
+    CartItemOption CartItemOption[]
+}
+
+model ProductOptionValue {
+    id              String           @id @default(cuid())
+    productOption   ProductOption    @relation(fields: [productOptionId], references: [id])
+    productOptionId String
+    optionValue     OptionValue      @relation(fields: [optionValueId], references: [id])
+    optionValueId   String
+    isAvailable     Boolean          @default(true)
+    cartItems       CartItemOption[]
+}
+
+model Cart {
+    id        String     @id @default(cuid())
+    userId    String     @unique
+    items     CartItem[]
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+    id        String           @id @default(cuid())
+    cart      Cart             @relation(fields: [cartId], references: [id])
+    cartId    String
+    product   Product          @relation(fields: [productId], references: [id])
+    productId String
+    quantity  Int              @default(1)
+    options   CartItemOption[]
+    createdAt DateTime         @default(now())
+    updatedAt DateTime         @updatedAt
+}
+
+model CartItemOption {
+    id                   String              @id @default(cuid())
+    cartItem             CartItem            @relation(fields: [cartItemId], references: [id])
+    cartItemId           String
+    productOption        ProductOption       @relation(fields: [productOptionId], references: [id])
+    productOptionId      String
+    optionValue          OptionValue         @relation(fields: [optionValueId], references: [id])
+    optionValueId        String
+    ProductOptionValue   ProductOptionValue? @relation(fields: [productOptionValueId], references: [id])
+    productOptionValueId String?
 }

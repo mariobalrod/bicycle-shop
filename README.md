@@ -3,6 +3,7 @@
 ## Getting Started
 
 ```bash
+# Prerequisites
 nvm use
 
 # Install dependencies
@@ -12,7 +13,6 @@ pnpm install
 
 # Database
 POSTGRES_URL="postgresql://postgres:123456@localhost:5432/postgres?schema=public"
-POSTGRES_URL_NON_POOLING="postgresql://postgres:123456@localhost:5432/postgres?schema=public"
 POSTGRES_HOST="localhost"
 POSTGRES_DATABASE="postgres"
 POSTGRES_PASSWORD="123456"
@@ -36,6 +36,9 @@ pnpm db:migrate
 
 # Generate Prisma types
 pnpm db:generate
+
+# Run Database seed script
+pnpm db:seed
 
 # Run
 pnpm dev
