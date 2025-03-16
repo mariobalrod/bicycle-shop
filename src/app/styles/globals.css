@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply h-full;
+  }
+
+  body {
+    @apply body1 font-regular text-ti-default-main;
+    @apply min-h-full;
+    -webkit-font-smoothing: antialiased;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* When the modals are closed, it is not rendered in the DOM */
+  body:has([role='dialog']) {
+    overflow: hidden;
+  }
+
+  #root {
+    @apply flex min-h-screen flex-col;
+  }
+}
+
+@layer components {
+}
+
+@layer utilities {
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+    clip: rect(0 0 0 0); /* IE6, IE7 */
+    clip-path: inset(100%);
+  }
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .invisible {
+    visibility: hidden;
+  }
+
+  .pretty-scrollbar-v::-webkit-scrollbar {
+    width: 6px;
+  }
+  .pretty-scrollbar-h::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .pretty-scrollbar-v,
+  .pretty-scrollbar-h {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.gray.400') transparent;
+  }
+
+  .pretty-scrollbar-v::-webkit-scrollbar-thumb,
+  .pretty-scrollbar-h::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: theme('colors.gray.400');
+  }
+
+  .pretty-scrollbar-v::-webkit-scrollbar-track,
+  .pretty-scrollbar-h::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
