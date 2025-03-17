@@ -30,7 +30,6 @@ const config = {
     'plugin:jsx-a11y/recommended',
     'plugin:import/recommended',
     'next/core-web-vitals',
-    'plugin:tailwindcss/recommended',
     'prettier',
   ],
   rules: {
@@ -38,6 +37,7 @@ const config = {
     'no-debugger': 'warn',
     'no-warning-comments': 'warn',
     'object-shorthand': 'error',
+    '@typescript-eslint/no-misused-promises': 'off',
     'import/order': [
       'error',
       {
@@ -63,12 +63,6 @@ const config = {
     ],
     'import/no-default-export': 'error',
     'import/no-extraneous-dependencies': 'error',
-    'tailwindcss/no-custom-classname': [
-      2,
-      {
-        callees: ['clsx'],
-      },
-    ],
     'react/jsx-curly-brace-presence': ['error', 'never'],
     '@next/next/no-img-element': 'off',
   },
