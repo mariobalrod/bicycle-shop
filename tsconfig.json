@@ -41,7 +41,8 @@
     "next-env.d.ts",
     ".lintstagedrc",
     ".storybook/*.ts",
-    ".storybook/*.tsx"
+    ".storybook/*.tsx",
+    "postcss.config.mjs"
   ],
   "exclude": ["node_modules"]
 }
