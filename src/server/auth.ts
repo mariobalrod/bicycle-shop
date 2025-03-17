@@ -1,11 +1,14 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
+import { UserRole } from '@prisma/client';
 import { compare } from 'bcryptjs';
 import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
+  type DefaultUser,
 } from 'next-auth';
 import { type Adapter } from 'next-auth/adapters';
+import { DefaultJWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 import { env } from '@/env';
@@ -21,9 +24,18 @@ declare module 'next-auth' {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      // ...other properties
-      // role: UserRole;
-    } & DefaultSession['user'];
+      role: UserRole;
+    } & DefaultSession['user'] & {
+        role: UserRole;
+      };
+  }
+
+  interface User extends DefaultUser {
+    role: UserRole;
+  }
+
+  interface JWT extends DefaultJWT {
+    role: UserRole;
   }
 }
 
@@ -72,6 +84,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
+          role: user.role,
         };
       },
     }),
@@ -96,6 +109,9 @@ export const authOptions: NextAuthOptions = {
       if (token.name) {
         session.user.name = token.name;
       }
+      if (token.role) {
+        session.user.role = token.role as UserRole;
+      }
       return session;
     },
     jwt({ token, user }) {
@@ -103,6 +119,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
+        token.role = user.role;
       }
       return token;
     },

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { PrismaClient, ProductType } from '@prisma/client';
+import { PrismaClient, ProductType, UserRole } from '@prisma/client';
 import { hash } from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -7,17 +7,29 @@ const prisma = new PrismaClient();
 async function main() {
   // Create admin user
   const adminPassword = await hash('Admin123.', 10);
-  const admin = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: 'admin@gmail.com' },
     update: {},
     create: {
       email: 'admin@gmail.com',
       name: 'Admin User',
+      role: UserRole.ADMIN,
       password: adminPassword,
     },
   });
 
-  console.log('Admin user created:', admin.email);
+  // Create customer user
+  const customerPassword = await hash('Customer123.', 10);
+  await prisma.user.upsert({
+    where: { email: 'customer@gmail.com' },
+    update: {},
+    create: {
+      email: 'customer@gmail.com',
+      name: 'Customer User',
+      role: UserRole.USER,
+      password: customerPassword,
+    },
+  });
 
   // Create Mountain Sports Category
   const mountainSportsCategory = await prisma.category.upsert({

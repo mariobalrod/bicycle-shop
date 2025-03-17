@@ -1,4 +1,4 @@
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient, User, UserRole } from '@prisma/client';
 import { type Session } from 'next-auth';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
@@ -9,12 +9,13 @@ const mockUser: User = {
   name: 'Test User',
   email: 'test@example.com',
   password: 'test-password',
+  role: UserRole.USER,
   createdAt: new Date(),
   updatedAt: new Date(),
 };
 
 const mockSession: Session = {
-  user: { id: '1' },
+  user: { id: '1', role: UserRole.USER },
   expires: new Date().toISOString(),
 };
 

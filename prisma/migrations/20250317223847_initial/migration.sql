@@ -1,10 +1,14 @@
 -- CreateEnum
+CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'USER');
+
+-- CreateEnum
 CREATE TYPE "ProductType" AS ENUM ('BICYCLE', 'SKI', 'SURFBOARD', 'ROLLER_SKATE');
 
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "role" "UserRole" NOT NULL DEFAULT 'USER',
     "name" TEXT,
     "password" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

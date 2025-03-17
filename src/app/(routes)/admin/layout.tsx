@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/client';
 import { redirect } from 'next/navigation';
 
 import { getServerAuthSession } from '@/server/auth';
@@ -13,6 +14,10 @@ export default async function AdminLayout({
 
   if (!session) {
     redirect('/auth');
+  }
+
+  if (session.user.role !== UserRole.ADMIN) {
+    redirect('/');
   }
 
   return (
