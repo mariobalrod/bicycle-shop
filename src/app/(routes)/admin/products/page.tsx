@@ -15,7 +15,7 @@ import {
 } from '../components/Table';
 
 export default async function AdminPage() {
-  const products = await apiServer.product.getAll();
+  const products = await apiServer.product.getAll({});
 
   return (
     <div className="flex flex-col gap-6">
@@ -69,7 +69,7 @@ export default async function AdminPage() {
                       : '!bg-red-100 !text-red-800',
                   )}
                 >
-                  {product.isActive ? 'In stock' : 'Inactive'}
+                  {product.isActive ? 'In stock' : 'Out of stock'}
                 </Badge>
               </TableCell>
               <TableCell className="text-right">

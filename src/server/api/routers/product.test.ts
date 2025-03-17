@@ -62,12 +62,50 @@ describe('productRouter', () => {
       };
 
       const caller = productRouter.createCaller(ctx);
-      const result = await caller.getAll();
+      const result = await caller.getAll({});
 
       expect(result).toEqual(mockProducts);
       expect(mockFindMany).toHaveBeenCalledWith({
         include: { category: true },
         orderBy: { createdAt: 'desc' },
+        where: {},
+        take: 10,
+        skip: 0,
+      });
+    });
+  });
+
+  describe('getAll with filters', () => {
+    it('should return all products with filters applied', async () => {
+      const mockProducts = [mockProduct];
+      mockFindMany.mockResolvedValue(mockProducts);
+
+      const ctx = {
+        db: mockDb,
+        session: null,
+        headers: new Headers(),
+      };
+
+      const caller = productRouter.createCaller(ctx);
+      const result = await caller.getAll({
+        categoryId: '1',
+        type: ProductType.BICYCLE,
+        isActive: true,
+        search: 'test',
+      });
+
+      expect(result).toEqual(mockProducts);
+      expect(mockFindMany).toHaveBeenCalledWith({
+        include: { category: true },
+        orderBy: { createdAt: 'desc' },
+        where: {
+          categoryId: '1',
+          type: ProductType.BICYCLE,
+          isActive: true,
+          name: { contains: 'test', mode: 'insensitive' },
+        },
+        take: 10,
+        skip: 0,
       });
     });
   });

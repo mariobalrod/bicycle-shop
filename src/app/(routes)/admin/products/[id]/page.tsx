@@ -4,8 +4,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ProductType } from '@prisma/client';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect, useMemo, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
 import { Button } from '@/app/components/Button';
 import { Input } from '@/app/components/form/Input';
@@ -33,10 +33,14 @@ export default function ProductDetailPage({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { data: categories = [], isLoading: isLoadingCategories } =
+    apiClient.category.getAll.useQuery();
   const { data: product, isLoading: isLoadingProduct } =
     apiClient.product.getById.useQuery({
       id: params.id,
     });
+
+  const isLoadingData = isLoadingProduct || isLoadingCategories;
 
   const updateProduct = apiClient.product.update.useMutation({
     onSuccess: () => {
@@ -47,14 +51,8 @@ export default function ProductDetailPage({
     },
   });
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
-    defaultValues: {
+  const defaultValues = useMemo(
+    () => ({
       name: product?.name,
       description: product?.description ?? '',
       price: product?.price,
@@ -62,8 +60,25 @@ export default function ProductDetailPage({
       isActive: product?.isActive,
       imageUrl: product?.imageUrl,
       categoryId: product?.categoryId,
-    },
+    }),
+    [product],
+  );
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm<ProductFormData>({
+    resolver: zodResolver(productSchema),
+    defaultValues,
   });
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
 
   const imageUrl = watch('imageUrl');
 
@@ -81,7 +96,7 @@ export default function ProductDetailPage({
     }
   };
 
-  if (isLoadingProduct) {
+  if (isLoadingData) {
     return <div>Loading...</div>;
   }
 
@@ -165,28 +180,69 @@ export default function ProductDetailPage({
           </div>
 
           <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="categoryId">Category</Label>
+            <Controller
+              control={control}
+              name="categoryId"
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange({ target: { value } });
+                  }}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Select a category</SelectLabel>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.categoryId && (
+              <p className="text-sm text-red-500">
+                {errors.categoryId.message}
+              </p>
+            )}
+          </div>
+
+          <div className="grid w-full items-center gap-1.5">
             <Label htmlFor="type">Type</Label>
-            <Select
-              defaultValue={product.type}
-              onValueChange={async (value) =>
-                await register('type').onChange({ target: { value } })
-              }
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a product type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Select a product type</SelectLabel>
-                  {Object.values(ProductType).map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type.charAt(0).toUpperCase() +
-                        type.slice(1).toLowerCase().replace('_', ' ')}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <Controller
+              control={control}
+              name="type"
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange({ target: { value } });
+                  }}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select a product type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Select a product type</SelectLabel>
+                      {Object.values(ProductType).map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type.charAt(0).toUpperCase() +
+                            type.slice(1).toLowerCase().replace('_', ' ')}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            />
             {errors.type && (
               <p className="text-sm text-red-500">{errors.type.message}</p>
             )}
@@ -194,24 +250,30 @@ export default function ProductDetailPage({
 
           <div className="grid w-full items-center gap-1.5">
             <Label htmlFor="isActive">Status</Label>
-            <Select
-              defaultValue={product.isActive.toString()}
-              onValueChange={async (value) =>
-                await register('isActive').onChange({
-                  target: { value: value === 'true' },
-                })
-              }
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a value" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="true">Active</SelectItem>
-                  <SelectItem value="false">Inactive</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <Controller
+              control={control}
+              name="isActive"
+              render={({ field }) => (
+                <Select
+                  value={field.value?.toString()}
+                  onValueChange={(value) => {
+                    field.onChange({
+                      target: { value: value === 'true' },
+                    });
+                  }}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select a value" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="true">In stock</SelectItem>
+                      <SelectItem value="false">Out of stock</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            />
             {errors.isActive && (
               <p className="text-sm text-red-500">{errors.isActive.message}</p>
             )}

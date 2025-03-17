@@ -1,3 +1,4 @@
+import { ProductType } from '@prisma/client';
 import { z } from 'zod';
 
 import {
@@ -7,16 +8,39 @@ import {
 } from '@/server/api/trpc';
 
 export const productRouter = createTRPCRouter({
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.product.findMany({
-      include: {
-        category: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-  }),
+  getAll: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().optional(),
+        offset: z.number().optional(),
+        categoryId: z.string().optional(),
+        type: z.nativeEnum(ProductType).optional(),
+        isActive: z.boolean().optional(),
+        search: z.string().optional(),
+        sortBy: z.enum(['createdAt', 'price', 'name']).optional(),
+        sortOrder: z.enum(['asc', 'desc']).optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.db.product.findMany({
+        include: {
+          category: true,
+        },
+        where: {
+          ...(input.categoryId && { categoryId: input.categoryId }),
+          ...(input.type && { type: input.type }),
+          ...(input.isActive !== undefined && { isActive: input.isActive }),
+          ...(input.search && {
+            name: { contains: input.search, mode: 'insensitive' },
+          }),
+        },
+        orderBy: {
+          [input.sortBy ?? 'createdAt']: input.sortOrder ?? 'desc',
+        },
+        take: input.limit ?? 10,
+        skip: input.offset ?? 0,
+      });
+    }),
 
   getBySlug: publicProcedure
     .input(z.object({ slug: z.string() }))
@@ -46,7 +70,7 @@ export const productRouter = createTRPCRouter({
         name: z.string(),
         description: z.string().optional(),
         price: z.number(),
-        type: z.enum(['BICYCLE', 'SKI', 'SURFBOARD', 'ROLLER_SKATE']),
+        type: z.nativeEnum(ProductType),
         imageUrl: z.string(),
         isActive: z.boolean().default(true),
         categoryId: z.string(),
@@ -65,7 +89,7 @@ export const productRouter = createTRPCRouter({
         name: z.string(),
         description: z.string().optional(),
         price: z.number(),
-        type: z.enum(['BICYCLE', 'SKI', 'SURFBOARD', 'ROLLER_SKATE']),
+        type: z.nativeEnum(ProductType),
         imageUrl: z.string(),
         isActive: z.boolean(),
       }),

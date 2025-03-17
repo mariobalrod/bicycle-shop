@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ProductType } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 import { Button } from '@/app/components/Button';
 import { Input } from '@/app/components/form/Input';
@@ -29,6 +29,9 @@ export default function NewProductPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { data: categories = [], isLoading: isLoadingCategories } =
+    apiClient.category.getAll.useQuery();
+
   const createProduct = apiClient.product.create.useMutation({
     onSuccess: () => {
       router.push('/admin');
@@ -42,6 +45,8 @@ export default function NewProductPage() {
     register,
     handleSubmit,
     watch,
+    control,
+    reset,
     formState: { errors },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
@@ -66,8 +71,13 @@ export default function NewProductPage() {
       await createProduct.mutateAsync(data);
     } finally {
       setIsLoading(false);
+      reset();
     }
   };
+
+  if (isLoadingCategories) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -145,28 +155,72 @@ export default function NewProductPage() {
           </div>
 
           <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="categoryId">Category</Label>
+
+            <Controller
+              control={control}
+              name="categoryId"
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange({ target: { value } });
+                  }}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Select a category</SelectLabel>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.categoryId && (
+              <p className="text-sm text-red-500">
+                {errors.categoryId.message}
+              </p>
+            )}
+          </div>
+
+          <div className="grid w-full items-center gap-1.5">
             <Label htmlFor="type">Type</Label>
-            <Select
-              defaultValue={ProductType.BICYCLE}
-              onValueChange={async (value) =>
-                await register('type').onChange({ target: { value } })
-              }
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a product type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Select a product type</SelectLabel>
-                  {Object.values(ProductType).map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type.charAt(0).toUpperCase() +
-                        type.slice(1).toLowerCase().replace('_', ' ')}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+
+            <Controller
+              control={control}
+              name="type"
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  defaultValue={ProductType.BICYCLE}
+                  onValueChange={(value) => {
+                    field.onChange({ target: { value } });
+                  }}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select a product type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Select a product type</SelectLabel>
+                      {Object.values(ProductType).map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type.charAt(0).toUpperCase() +
+                            type.slice(1).toLowerCase().replace('_', ' ')}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            />
             {errors.type && (
               <p className="text-sm text-red-500">{errors.type.message}</p>
             )}
@@ -174,24 +228,31 @@ export default function NewProductPage() {
 
           <div className="grid w-full items-center gap-1.5">
             <Label htmlFor="isActive">Status</Label>
-            <Select
-              defaultValue="true"
-              onValueChange={(value) =>
-                register('isActive').onChange({
-                  target: { value: value === 'true' },
-                })
-              }
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a value" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="true">Active</SelectItem>
-                  <SelectItem value="false">Inactive</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <Controller
+              control={control}
+              name="isActive"
+              render={({ field }) => (
+                <Select
+                  value={field.value?.toString()}
+                  defaultValue="true"
+                  onValueChange={(value) => {
+                    field.onChange({
+                      target: { value: value === 'true' },
+                    });
+                  }}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select a value" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="true">In stock</SelectItem>
+                      <SelectItem value="false">Out of stock</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            />
             {errors.isActive && (
               <p className="text-sm text-red-500">{errors.isActive.message}</p>
             )}

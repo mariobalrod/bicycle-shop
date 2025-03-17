@@ -1,15 +1,15 @@
 import { ProductType } from '@prisma/client';
 
+import { Sorting } from '@/app/(routes)/products/types';
+
 export type Props = {
   search: string;
   onSearchChange: (value: string) => void;
-  type: ProductType | 'ALL';
-  onTypeChange: (value: ProductType | 'ALL') => void;
+  type?: ProductType;
+  onTypeChange: (value?: ProductType) => void;
   category: string;
   onCategoryChange: (value: string) => void;
-  sortBy: 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc';
-  onSortChange: (
-    value: 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc',
-  ) => void;
+  sortBy: Sorting;
+  onSortChange: (value: Sorting) => void;
   categories: Array<{ id: string; name: string }>;
 };

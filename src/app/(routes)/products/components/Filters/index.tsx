@@ -35,14 +35,21 @@ export function Filters({
         />
       </div>
       <div className="flex gap-4 w-full max-w-xl">
-        <Select value={type} onValueChange={onTypeChange}>
+        <Select
+          value={type ?? 'default'}
+          onValueChange={(value) => {
+            onTypeChange(
+              value !== 'default' ? (value as ProductType) : undefined,
+            );
+          }}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Product type" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Product type</SelectLabel>
-              <SelectItem value="ALL">All</SelectItem>
+              <SelectItem value="default">All</SelectItem>
               {Object.values(ProductType).map((type) => (
                 <SelectItem key={type} value={type}>
                   {type.charAt(0).toUpperCase() +
@@ -60,7 +67,7 @@ export function Filters({
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Category</SelectLabel>
-              <SelectItem value="ALL">All</SelectItem>
+              <SelectItem value="default">All</SelectItem>
               {categories.map((category) => (
                 <SelectItem key={category.id} value={category.id}>
                   {category.name}
@@ -77,6 +84,12 @@ export function Filters({
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Sort by</SelectLabel>
+              <SelectItem value="createdAt-desc">
+                Date: Newest to oldest
+              </SelectItem>
+              <SelectItem value="createdAt-asc">
+                Date: Oldest to newest
+              </SelectItem>
               <SelectItem value="price-asc">Price: Low to high</SelectItem>
               <SelectItem value="price-desc">Price: High to low</SelectItem>
               <SelectItem value="name-asc">Name: A-Z</SelectItem>
