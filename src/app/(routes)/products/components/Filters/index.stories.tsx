@@ -27,9 +27,9 @@ export const Default: Story = {
   args: {
     search: '',
     onSearchChange: (value) => console.log('Search changed:', value),
-    type: 'ALL',
+    type: undefined,
     onTypeChange: (value) => console.log('Type changed:', value),
-    category: 'ALL',
+    category: 'default',
     onCategoryChange: (value) => console.log('Category changed:', value),
     sortBy: 'price-asc',
     onSortChange: (value) => console.log('Sort changed:', value),
