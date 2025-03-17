@@ -11,19 +11,7 @@ import {
   SelectValue,
 } from '@/app/components/form/Select';
 
-interface ProductFiltersProps {
-  search: string;
-  onSearchChange: (value: string) => void;
-  type: ProductType | 'ALL';
-  onTypeChange: (value: ProductType | 'ALL') => void;
-  category: string;
-  onCategoryChange: (value: string) => void;
-  sortBy: 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc';
-  onSortChange: (
-    value: 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc',
-  ) => void;
-  categories: Array<{ id: string; name: string }>;
-}
+import { Props } from './types';
 
 export function Filters({
   search,
@@ -35,7 +23,7 @@ export function Filters({
   sortBy,
   onSortChange,
   categories,
-}: ProductFiltersProps) {
+}: Props) {
   return (
     <div className="flex flex-col gap-4 w-full sm:flex-row sm:items-center">
       <div className="w-full max-w-md">

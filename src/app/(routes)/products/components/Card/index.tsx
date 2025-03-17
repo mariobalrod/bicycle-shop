@@ -1,19 +1,9 @@
-import { ProductType } from '@prisma/client';
 import clsx from 'clsx';
 import Link from 'next/link';
 
 import { Badge } from '@/app/components/Badge';
 
-interface ProductCardProps {
-  name: string;
-  description: string | null;
-  price: number;
-  imageUrl: string;
-  type: ProductType;
-  isActive: boolean;
-  category: string;
-  slug: string;
-}
+import { Props } from './types';
 
 export function Card({
   name,
@@ -24,7 +14,7 @@ export function Card({
   isActive,
   category,
   slug,
-}: ProductCardProps) {
+}: Props) {
   return (
     <Link
       href={`/products/${slug}`}
