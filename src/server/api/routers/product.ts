@@ -74,7 +74,7 @@ export const productRouter = createTRPCRouter({
       const { id, ...data } = input;
       return ctx.db.product.update({
         where: { id },
-        data,
+        data: { ...data, slug: data.name.toLowerCase().replace(/ /g, '-') },
       });
     }),
 

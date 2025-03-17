@@ -10,6 +10,7 @@ export default defineConfig({
     include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     environment: 'jsdom',
     globals: true,
+    setupFiles: './src/test/setup.ts',
     /**
      * Option added because vitest runner was not existing correctly, even when tests were successful
      * https://vitest.dev/guide/common-errors.html#failed-to-terminate-worker
@@ -17,4 +18,9 @@ export default defineConfig({
     pool: 'forks',
   },
   base: './src/*',
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
 });

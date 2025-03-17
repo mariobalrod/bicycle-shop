@@ -1,17 +1,15 @@
-import { z } from 'zod';
-
-import {
-  createTRPCRouter,
-  // protectedProcedure,
-  publicProcedure,
-} from '@/server/api/trpc';
+import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 
 export const userRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
+  me: publicProcedure.query(async ({ ctx }) => {
+    if (!ctx.session?.user.id) {
+      return undefined;
+    }
+
+    const user = await ctx.db.user.findFirst({
+      where: { id: ctx.session.user.id },
+    });
+
+    return user;
+  }),
 });
