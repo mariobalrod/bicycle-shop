@@ -1,15 +1,15 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
+import { compare } from 'bcryptjs';
 import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
 } from 'next-auth';
 import { type Adapter } from 'next-auth/adapters';
-import EmailProvider from 'next-auth/providers/email';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
 import { env } from '@/env';
 import { db } from '@/server/db';
-// import { sendMagicLinkEmail } from '@/server/services/sendgrid';
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -25,11 +25,6 @@ declare module 'next-auth' {
       // role: UserRole;
     } & DefaultSession['user'];
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
 
 /**
@@ -40,18 +35,44 @@ declare module 'next-auth' {
 export const authOptions: NextAuthOptions = {
   debug: true,
   session: {
-    strategy: 'database',
+    strategy: 'jwt',
   },
   pages: {
-    signIn: '/sign-in',
-    newUser: '/join',
+    signIn: '/auth',
+    newUser: '/auth',
   },
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
-    EmailProvider({
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      sendVerificationRequest({ identifier, url }) {
-        // sendMagicLinkEmail(identifier, url);
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Please enter an email and password');
+        }
+
+        const user = await db.user.findUnique({
+          where: { email: credentials.email },
+        });
+
+        if (!user) {
+          throw new Error('No user found with this email');
+        }
+
+        const isValid = await compare(credentials.password, user.password);
+
+        if (!isValid) {
+          throw new Error('Invalid password');
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        };
       },
     }),
     /**
@@ -65,30 +86,25 @@ export const authOptions: NextAuthOptions = {
      */
   ],
   callbacks: {
-    async session({ session }) {
-      const existingUser = await db.user.findFirst({
-        where: { email: session.user.email },
-      });
-      if (existingUser) {
-        session.user.id = existingUser.id;
-        session.user.name = existingUser.name;
+    session({ session, token }) {
+      if (token.sub) {
+        session.user.id = token.sub;
+      }
+      if (token.email) {
+        session.user.email = token.email;
+      }
+      if (token.name) {
+        session.user.name = token.name;
       }
       return session;
     },
-    async signIn({ account }) {
-      if (account?.provider == 'email') {
-        const existingUser = await db.user.findFirst({
-          where: { email: account.userId },
-        });
-        if (!existingUser) {
-          await db.user.create({
-            data: {
-              email: account.userId,
-            },
-          });
-        }
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
       }
-      return true;
+      return token;
     },
   },
   secret: env.NEXTAUTH_SECRET,
