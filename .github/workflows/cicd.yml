@@ -29,7 +29,9 @@ jobs:
 
       - name: 📦 Install dependencies
         shell: bash
-        run: pnpm install
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm install
 
   Storybook:
     if: ${{ (github.event_name == 'pull_request' || github.event_name == 'push') && (github.ref != 'refs/heads/develop' )}}
@@ -49,7 +51,9 @@ jobs:
 
       - name: 📦 Install dependencies
         shell: bash
-        run: pnpm install
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm install
 
       - name: 🌸 Build Storybook
         run: pnpm build:storybook
@@ -71,7 +75,9 @@ jobs:
 
       - name: 📦 Install dependencies
         shell: bash
-        run: pnpm install
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm install
 
       - name: 🗄️ Generate Database
         run: pnpm db:generate
@@ -96,7 +102,9 @@ jobs:
 
       - name: 📦 Install dependencies
         shell: bash
-        run: pnpm install
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm install
 
       - name: 🧪 Test
         run: pnpm test
