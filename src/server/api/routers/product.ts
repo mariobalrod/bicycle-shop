@@ -26,7 +26,7 @@ export const productRouter = createTRPCRouter({
         offset: z.number().optional(),
         categoryId: z.string().optional(),
         type: z.nativeEnum(ProductType).optional(),
-        isActive: z.boolean().optional(),
+        hasStock: z.boolean().optional(),
         search: z.string().optional(),
         sortBy: z.enum(['createdAt', 'price', 'name']).optional(),
         sortOrder: z.enum(['asc', 'desc']).optional(),
@@ -40,7 +40,7 @@ export const productRouter = createTRPCRouter({
         where: {
           ...(input.categoryId && { categoryId: input.categoryId }),
           ...(input.type && { type: input.type }),
-          ...(input.isActive !== undefined && { isActive: input.isActive }),
+          ...(input.hasStock !== undefined && { hasStock: input.hasStock }),
           ...(input.search && {
             name: { contains: input.search, mode: 'insensitive' },
           }),
@@ -60,6 +60,13 @@ export const productRouter = createTRPCRouter({
         where: { slug: input.slug },
         include: {
           category: true,
+          properties: {
+            include: {
+              options: {
+                include: { incompatibleWith: true, incompatibleWithMe: true },
+              },
+            },
+          },
         },
       });
     }),
@@ -71,6 +78,13 @@ export const productRouter = createTRPCRouter({
         where: { id: input.id },
         include: {
           category: true,
+          properties: {
+            include: {
+              options: {
+                include: { incompatibleWith: true, incompatibleWithMe: true },
+              },
+            },
+          },
         },
       });
     }),
@@ -83,7 +97,7 @@ export const productRouter = createTRPCRouter({
         price: z.number(),
         type: z.nativeEnum(ProductType),
         imageUrl: z.string(),
-        isActive: z.boolean().default(true),
+        hasStock: z.boolean().default(true),
         categoryId: z.string(),
       }),
     )
@@ -102,7 +116,7 @@ export const productRouter = createTRPCRouter({
         price: z.number(),
         type: z.nativeEnum(ProductType),
         imageUrl: z.string(),
-        isActive: z.boolean(),
+        hasStock: z.boolean(),
       }),
     )
     .mutation(async ({ ctx, input }) => {

@@ -59,12 +59,12 @@ export default function ProductDetailPage({
               </h1>
               <Badge
                 className={clsx(
-                  product.isActive
+                  product.hasStock
                     ? '!bg-green-100 !text-green-800'
                     : '!bg-red-100 !text-red-800',
                 )}
               >
-                {product.isActive ? 'In stock' : 'Out of stock'}
+                {product.hasStock ? 'In stock' : 'Out of stock'}
               </Badge>
             </div>
 

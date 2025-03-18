@@ -8,7 +8,7 @@ export const productSchema = z.object({
   type: z.nativeEnum(ProductType, {
     required_error: 'Type is required',
   }),
-  isActive: z.boolean(),
+  hasStock: z.boolean(),
   imageUrl: z.string().url('Image URL is not valid'),
   categoryId: z.string().min(1, 'Category is required'),
 });

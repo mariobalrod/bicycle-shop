@@ -55,7 +55,7 @@ export default function NewProductPage() {
       description: '',
       price: 0,
       type: ProductType.BICYCLE,
-      isActive: true,
+      hasStock: true,
       imageUrl: '',
       categoryId: '',
     },
@@ -227,10 +227,10 @@ export default function NewProductPage() {
           </div>
 
           <div className="grid w-full items-center gap-1.5">
-            <Label htmlFor="isActive">Status</Label>
+            <Label htmlFor="hasStock">Status</Label>
             <Controller
               control={control}
-              name="isActive"
+              name="hasStock"
               render={({ field }) => (
                 <Select
                   value={field.value?.toString()}
@@ -253,8 +253,8 @@ export default function NewProductPage() {
                 </Select>
               )}
             />
-            {errors.isActive && (
-              <p className="text-sm text-red-500">{errors.isActive.message}</p>
+            {errors.hasStock && (
+              <p className="text-sm text-red-500">{errors.hasStock.message}</p>
             )}
           </div>
 

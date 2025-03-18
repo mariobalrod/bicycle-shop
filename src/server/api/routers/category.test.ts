@@ -1,4 +1,4 @@
-import { Category, PrismaClient } from '@prisma/client';
+import { Category, PrismaClient, UserRole } from '@prisma/client';
 import { type Session } from 'next-auth';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
@@ -14,7 +14,7 @@ const mockCategory: Category = {
 };
 
 const mockSession: Session = {
-  user: { id: '1' },
+  user: { id: '1', role: UserRole.ADMIN },
   expires: new Date().toISOString(),
 };
 

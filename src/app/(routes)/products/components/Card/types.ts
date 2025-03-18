@@ -6,7 +6,7 @@ export type Props = {
   price: number;
   imageUrl: string;
   type: ProductType;
-  isActive: boolean;
+  hasStock: boolean;
   category: string;
   slug: string;
 };

@@ -1,4 +1,4 @@
-import { PrismaClient, Product, ProductType } from '@prisma/client';
+import { PrismaClient, Product, ProductType, UserRole } from '@prisma/client';
 import { type Session } from 'next-auth';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
@@ -12,14 +12,28 @@ const mockProduct: Product = {
   description: null,
   price: 100,
   type: ProductType.BICYCLE,
-  isActive: true,
+  hasStock: true,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  categoryId: '1',
+};
+
+const mockProductDetail: Product = {
+  id: '1',
+  name: 'Test Product',
+  slug: 'test-product',
+  imageUrl: 'https://example.com/image.jpg',
+  description: null,
+  price: 100,
+  type: ProductType.BICYCLE,
+  hasStock: true,
   createdAt: new Date(),
   updatedAt: new Date(),
   categoryId: '1',
 };
 
 const mockSession: Session = {
-  user: { id: '1' },
+  user: { id: '1', role: UserRole.ADMIN },
   expires: new Date().toISOString(),
 };
 
@@ -62,20 +76,17 @@ describe('productRouter', () => {
       };
 
       const caller = productRouter.createCaller(ctx);
-      const result = await caller.getAll({});
+      const result = await caller.getAll();
 
       expect(result).toEqual(mockProducts);
       expect(mockFindMany).toHaveBeenCalledWith({
         include: { category: true },
         orderBy: { createdAt: 'desc' },
-        where: {},
-        take: 10,
-        skip: 0,
       });
     });
   });
 
-  describe('getAll with filters', () => {
+  describe('list with filters', () => {
     it('should return all products with filters applied', async () => {
       const mockProducts = [mockProduct];
       mockFindMany.mockResolvedValue(mockProducts);
@@ -87,10 +98,10 @@ describe('productRouter', () => {
       };
 
       const caller = productRouter.createCaller(ctx);
-      const result = await caller.getAll({
+      const result = await caller.list({
         categoryId: '1',
         type: ProductType.BICYCLE,
-        isActive: true,
+        hasStock: true,
         search: 'test',
       });
 
@@ -101,7 +112,7 @@ describe('productRouter', () => {
         where: {
           categoryId: '1',
           type: ProductType.BICYCLE,
-          isActive: true,
+          hasStock: true,
           name: { contains: 'test', mode: 'insensitive' },
         },
         take: 10,
@@ -112,7 +123,7 @@ describe('productRouter', () => {
 
   describe('getBySlug', () => {
     it('should return a product by slug', async () => {
-      mockFindUnique.mockResolvedValue(mockProduct);
+      mockFindUnique.mockResolvedValue(mockProductDetail);
 
       const ctx = {
         db: mockDb,
@@ -123,17 +134,26 @@ describe('productRouter', () => {
       const caller = productRouter.createCaller(ctx);
       const result = await caller.getBySlug({ slug: 'test-product' });
 
-      expect(result).toEqual(mockProduct);
+      expect(result).toEqual(mockProductDetail);
       expect(mockFindUnique).toHaveBeenCalledWith({
         where: { slug: 'test-product' },
-        include: { category: true },
+        include: {
+          category: true,
+          properties: {
+            include: {
+              options: {
+                include: { incompatibleWith: true, incompatibleWithMe: true },
+              },
+            },
+          },
+        },
       });
     });
   });
 
   describe('getById', () => {
     it('should return a product by id', async () => {
-      mockFindUnique.mockResolvedValue(mockProduct);
+      mockFindUnique.mockResolvedValue(mockProductDetail);
 
       const ctx = {
         db: mockDb,
@@ -144,10 +164,19 @@ describe('productRouter', () => {
       const caller = productRouter.createCaller(ctx);
       const result = await caller.getById({ id: '1' });
 
-      expect(result).toEqual(mockProduct);
+      expect(result).toEqual(mockProductDetail);
       expect(mockFindUnique).toHaveBeenCalledWith({
         where: { id: '1' },
-        include: { category: true },
+        include: {
+          category: true,
+          properties: {
+            include: {
+              options: {
+                include: { incompatibleWith: true, incompatibleWithMe: true },
+              },
+            },
+          },
+        },
       });
     });
   });
@@ -179,7 +208,7 @@ describe('productRouter', () => {
         data: {
           ...input,
           slug: 'new-product',
-          isActive: true,
+          hasStock: true,
         },
       });
     });
@@ -194,7 +223,7 @@ describe('productRouter', () => {
         price: 200,
         type: ProductType.BICYCLE,
         imageUrl: 'https://example.com/updated-image.jpg',
-        isActive: true,
+        hasStock: true,
       };
 
       mockUpdate.mockResolvedValue(mockProduct);
@@ -217,7 +246,7 @@ describe('productRouter', () => {
           price: input.price,
           type: input.type,
           imageUrl: input.imageUrl,
-          isActive: input.isActive,
+          hasStock: input.hasStock,
           slug: 'updated-product',
         },
       });

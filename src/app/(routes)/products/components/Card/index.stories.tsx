@@ -23,7 +23,7 @@ export const Default: Story = {
     imageUrl:
       'https://images.unsplash.com/photo-1511994298241-608e28f14fde?w=500&h=500&fit=crop',
     type: ProductType.BICYCLE,
-    isActive: true,
+    hasStock: true,
     category: 'Mountain',
     slug: 'mountain-bike-pro',
   },
@@ -37,7 +37,7 @@ export const OutOfStock: Story = {
     imageUrl:
       'https://images.unsplash.com/photo-1511994298241-608e28f14fde?w=500&h=500&fit=crop',
     type: ProductType.BICYCLE,
-    isActive: false,
+    hasStock: false,
     category: 'Road',
     slug: 'road-bike-elite',
   },

@@ -2,6 +2,7 @@ import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc';
 
 import { categoryRouter } from './routers/category';
 import { productRouter } from './routers/product';
+import { productCustomizationRouter } from './routers/product-customization';
 import { userRouter } from './routers/user';
 
 /**
@@ -11,8 +12,9 @@ import { userRouter } from './routers/user';
  */
 export const appRouter = createTRPCRouter({
   user: userRouter,
-  product: productRouter,
   category: categoryRouter,
+  product: productRouter,
+  productCustomization: productCustomizationRouter,
 });
 
 // export type definition of API

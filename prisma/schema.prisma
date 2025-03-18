@@ -32,21 +32,6 @@ enum ProductType {
     ROLLER_SKATE
 }
 
-model Product {
-    id          String      @id @default(cuid())
-    name        String      @unique
-    slug        String      @unique
-    imageUrl    String
-    description String?
-    price       Float
-    type        ProductType
-    isActive    Boolean     @default(true)
-    createdAt   DateTime    @default(now())
-    updatedAt   DateTime    @updatedAt
-    category    Category    @relation(fields: [categoryId], references: [id])
-    categoryId  String
-}
-
 model Category {
     id          String    @id @default(cuid())
     name        String
@@ -55,4 +40,46 @@ model Category {
     createdAt   DateTime  @default(now())
     updatedAt   DateTime  @updatedAt
     products    Product[]
+}
+
+model Product {
+    id          String            @id @default(cuid())
+    name        String            @unique
+    slug        String            @unique
+    imageUrl    String
+    description String?
+    price       Float
+    type        ProductType
+    hasStock    Boolean           @default(true)
+    createdAt   DateTime          @default(now())
+    updatedAt   DateTime          @updatedAt
+    category    Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+    categoryId  String
+    properties  ProductProperty[]
+}
+
+model ProductProperty {
+    id        String                  @id @default(cuid())
+    name      String
+    options   ProductPropertyOption[]
+    createdAt DateTime                @default(now())
+    updatedAt DateTime                @updatedAt
+    productId String
+    product   Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model ProductPropertyOption {
+    id                 String                  @id @default(cuid())
+    name               String
+    createdAt          DateTime                @default(now())
+    updatedAt          DateTime                @updatedAt
+    propertyId         String
+    hasStock           Boolean                 @default(true)
+    property           ProductProperty         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+    // Options that this option is incompatible with
+    // Example: If this is "Disc Brake", this field would contain "Aluminum Wheel"
+    incompatibleWith   ProductPropertyOption[] @relation("IncompatibleOptions")
+    // Options that are incompatible with this option
+    // Example: If this is "Aluminum Wheel", this field would contain "Disc Brake"
+    incompatibleWithMe ProductPropertyOption[] @relation("IncompatibleOptions")
 }

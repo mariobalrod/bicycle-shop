@@ -11,7 +11,7 @@ export function Card({
   price,
   imageUrl,
   type,
-  isActive,
+  hasStock,
   category,
   slug,
 }: Props) {
@@ -34,12 +34,12 @@ export function Card({
           <h3 className="text-sm font-medium text-gray-900">{name}</h3>
           <Badge
             className={clsx(
-              isActive
+              hasStock
                 ? '!bg-green-100 !text-green-800'
                 : '!bg-red-100 !text-red-800',
             )}
           >
-            {isActive ? 'In stock' : 'Out of stock'}
+            {hasStock ? 'In stock' : 'Out of stock'}
           </Badge>
         </div>
         <p className="text-sm text-gray-500 line-clamp-2">{description}</p>
