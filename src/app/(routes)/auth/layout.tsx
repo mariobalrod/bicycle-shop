@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 
+import { paths } from '@/globals/paths';
 import { getServerAuthSession } from '@/server/auth';
 
 export default async function AuthLayout({
@@ -10,7 +11,7 @@ export default async function AuthLayout({
   const session = await getServerAuthSession();
 
   if (session) {
-    redirect('/admin');
+    redirect(paths.admin.root);
   }
 
   return children;

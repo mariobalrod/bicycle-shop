@@ -5,11 +5,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { Button } from '@/app/components/Button';
 import { Input } from '@/app/components/form/Input';
 import { Label } from '@/app/components/form/Label';
 import { Textarea } from '@/app/components/form/Textarea';
+import { paths } from '@/globals/paths';
 import { apiClient } from '@/server/trpc';
 
 import { categorySchema, type CategoryFormData } from '../types';
@@ -19,9 +21,13 @@ export default function NewCategoryPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { refetch: refetchCategories } = apiClient.category.getAll.useQuery();
+
   const createCategory = apiClient.category.create.useMutation({
-    onSuccess: () => {
-      router.push('/admin/categories');
+    onSuccess: async () => {
+      await refetchCategories();
+      router.push(paths.admin.categories.all);
+      toast.success('Category created successfully');
     },
     onError: (error) => {
       setError(error.message);
@@ -98,7 +104,7 @@ export default function NewCategoryPage() {
             <Button
               type="button"
               variant="secondary"
-              onClick={() => router.push('/admin/categories')}
+              onClick={() => router.push(paths.admin.categories.all)}
             >
               Cancel
             </Button>

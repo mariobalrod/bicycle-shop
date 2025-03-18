@@ -6,6 +6,7 @@ import { ProductType } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import {
   productSchema,
@@ -24,6 +25,7 @@ import {
   SelectValue,
 } from '@/app/components/form/Select';
 import { Textarea } from '@/app/components/form/Textarea';
+import { paths } from '@/globals/paths';
 import { apiClient } from '@/server/trpc';
 
 export function BasicDetails({ productId }: { productId: string }) {
@@ -31,6 +33,7 @@ export function BasicDetails({ productId }: { productId: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { refetch: refetchProducts } = apiClient.product.getAll.useQuery();
   const { data: categories = [], isLoading: isLoadingCategories } =
     apiClient.category.getAll.useQuery();
   const { data: product, isLoading: isLoadingProduct } =
@@ -39,8 +42,10 @@ export function BasicDetails({ productId }: { productId: string }) {
     });
 
   const updateProduct = apiClient.product.update.useMutation({
-    onSuccess: () => {
-      router.push('/admin');
+    onSuccess: async () => {
+      await refetchProducts();
+      router.push(paths.admin.products.all);
+      toast.success('Product updated successfully');
     },
     onError: (error) => {
       setError(error.message);
@@ -277,7 +282,7 @@ export function BasicDetails({ productId }: { productId: string }) {
           <Button
             type="button"
             variant="secondary"
-            onClick={() => router.push('/admin')}
+            onClick={() => router.push(paths.admin.products.all)}
           >
             Cancel
           </Button>

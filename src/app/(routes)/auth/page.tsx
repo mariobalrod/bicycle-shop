@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Button } from '@/app/components/Button';
 import { Input } from '@/app/components/form/Input';
 import { Label } from '@/app/components/form/Label';
-
+import { paths } from '@/globals/paths';
 export default function AdminAuthPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +32,7 @@ export default function AdminAuthPage() {
       if (result?.error) {
         setError('Invalid credentials');
       } else {
-        router.push('/admin');
+        router.push(paths.admin.root);
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {

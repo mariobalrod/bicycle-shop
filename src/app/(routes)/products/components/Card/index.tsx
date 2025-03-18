@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 
 import { Badge } from '@/app/components/Badge';
+import { paths } from '@/globals/paths';
 
 import { Props } from './types';
 
@@ -17,7 +18,7 @@ export function Card({
 }: Props) {
   return (
     <Link
-      href={`/products/${slug}`}
+      href={paths.products.details(slug)}
       className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition-all hover:shadow-lg"
     >
       <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden bg-gray-200">

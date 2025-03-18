@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation';
 
+import { paths } from '@/globals/paths';
+
 export default function Home() {
-  redirect('/products');
+  redirect(paths.products.all);
 }

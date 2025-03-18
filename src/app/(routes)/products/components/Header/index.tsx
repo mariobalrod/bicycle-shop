@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 
 import { Button } from '@/app/components/Button';
-
+import { paths } from '@/globals/paths';
 export function Header() {
   return (
     <header className="border-b border-gray-200 bg-white">
@@ -16,7 +16,7 @@ export function Header() {
               Bicycle Shop
             </Link>
             <Link
-              href="/admin"
+              href={paths.admin.root}
               className="text-sm mb-0.75 font-medium text-gray-500 hover:text-gray-700"
             >
               Admin
