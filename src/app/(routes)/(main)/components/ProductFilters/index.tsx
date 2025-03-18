@@ -13,7 +13,7 @@ import {
 
 import { Props } from './types';
 
-export function Filters({
+export function ProductFilters({
   search,
   onSearchChange,
   type,

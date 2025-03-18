@@ -18,7 +18,7 @@ import {
 } from '@/app/components/AlertDialog';
 import { Button } from '@/app/components/Button';
 import { Skeleton } from '@/app/components/Skeleton';
-import { paths } from '@/globals/paths';
+import { paths } from '@/app/utils/paths';
 import { apiClient } from '@/server/trpc';
 
 import {

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 
 import { Button } from '@/app/components/Button';
-import { paths } from '@/globals/paths';
+import { paths } from '@/app/utils/paths';
 
 export function Header() {
   return (
@@ -34,12 +34,6 @@ export function Header() {
                 className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"
               >
                 Categories
-              </Link>
-              <Link
-                href={paths.admin.orders.all}
-                className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"
-              >
-                Orders
               </Link>
             </div>
           </div>

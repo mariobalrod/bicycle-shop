@@ -11,7 +11,7 @@ import { Button } from '@/app/components/Button';
 import { Input } from '@/app/components/form/Input';
 import { Label } from '@/app/components/form/Label';
 import { Textarea } from '@/app/components/form/Textarea';
-import { paths } from '@/globals/paths';
+import { paths } from '@/app/utils/paths';
 import { apiClient } from '@/server/trpc';
 
 import { categorySchema, type CategoryFormData } from '../types';

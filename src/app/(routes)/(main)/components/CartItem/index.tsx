@@ -1,7 +1,7 @@
 import { Minus, Plus, Trash2 } from 'lucide-react';
 
 import { Button } from '@/app/components/Button';
-import { type CartItem } from '@/app/store/cart';
+import { type CartItem } from '@/app/utils/cart';
 
 import { Props } from './types';
 

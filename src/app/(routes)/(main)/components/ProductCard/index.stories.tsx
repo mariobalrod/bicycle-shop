@@ -1,16 +1,16 @@
 import { ProductType } from '@prisma/client';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Card } from '.';
+import { ProductCard } from '.';
 
 const meta = {
-  title: 'Products/Card',
-  component: Card,
+  title: 'Main/Products/Card',
+  component: ProductCard,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof Card>;
+} satisfies Meta<typeof ProductCard>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

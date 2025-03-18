@@ -1,4 +1,4 @@
-import { CartItem } from '@/app/store/cart';
+import { CartItem } from '@/app/utils/cart';
 
 export type Props = {
   item: CartItem;

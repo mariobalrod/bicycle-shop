@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from '@/app/components/form/Select';
 import { Textarea } from '@/app/components/form/Textarea';
-import { paths } from '@/globals/paths';
+import { paths } from '@/app/utils/paths';
 import { apiClient } from '@/server/trpc';
 
 export function BasicDetails({ productId }: { productId: string }) {

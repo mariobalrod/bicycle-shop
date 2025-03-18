@@ -3,11 +3,11 @@
 import { ProductType } from '@prisma/client';
 import { useState } from 'react';
 
+import { ProductCard } from '@/app/(routes)/(main)/components/ProductCard';
+import { ProductFilters } from '@/app/(routes)/(main)/components/ProductFilters';
 import { Skeleton } from '@/app/components/Skeleton';
 import { apiClient } from '@/server/trpc';
 
-import { Card } from './components/Card';
-import { Filters } from './components/Filters';
 import { Sorting } from './types';
 
 export default function Products() {
@@ -39,7 +39,7 @@ export default function Products() {
       </div>
 
       <div className="mb-8">
-        <Filters
+        <ProductFilters
           search={search}
           onSearchChange={setSearch}
           type={type}
@@ -63,7 +63,7 @@ export default function Products() {
           </div>
         ) : (
           products.map(({ category, ...product }) => (
-            <Card
+            <ProductCard
               key={product.id}
               {...product}
               category={category.name}

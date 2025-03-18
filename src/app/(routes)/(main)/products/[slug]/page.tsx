@@ -5,13 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { ProductConfigurator } from '@/app/(routes)/(main)/components/ProductConfigurator';
 import { Badge } from '@/app/components/Badge';
 import { Button } from '@/app/components/Button';
-import { ConfigurationOption, useCartStore } from '@/app/store/cart';
-import { paths } from '@/globals/paths';
+import { ConfigurationOption, useCartStore } from '@/app/utils/cart';
+import { paths } from '@/app/utils/paths';
 import { apiClient } from '@/server/trpc';
-
-import { ProductConfigurator } from './components/ProductConfigurator';
 
 export default function ProductDetailPage({
   params,

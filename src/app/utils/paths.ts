@@ -12,9 +12,6 @@ export const paths = {
       new: '/admin/categories/new',
       edit: (id: string) => `/admin/categories/${id}`,
     },
-    orders: {
-      all: '/admin/orders',
-    },
   },
   products: {
     all: '/products',

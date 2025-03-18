@@ -2,11 +2,11 @@ import clsx from 'clsx';
 import Link from 'next/link';
 
 import { Badge } from '@/app/components/Badge';
-import { paths } from '@/globals/paths';
+import { paths } from '@/app/utils/paths';
 
 import { Props } from './types';
 
-export function Card({
+export function ProductCard({
   name,
   description,
   price,

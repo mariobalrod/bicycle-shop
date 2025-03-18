@@ -8,8 +8,8 @@ import { useEffect, useState } from 'react';
 
 import { Badge } from '@/app/components/Badge';
 import { Button } from '@/app/components/Button';
-import { useCartStore } from '@/app/store/cart';
-import { paths } from '@/globals/paths';
+import { useCartStore } from '@/app/utils/cart';
+import { paths } from '@/app/utils/paths';
 
 export function Header({ role }: { role?: UserRole }) {
   const [mounted, setMounted] = useState(false);

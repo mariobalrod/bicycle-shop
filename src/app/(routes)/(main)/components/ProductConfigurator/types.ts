@@ -1,6 +1,6 @@
 import { ProductPropertyOption, type ProductProperty } from '@prisma/client';
 
-import { ConfigurationOption } from '@/app/store/cart';
+import { ConfigurationOption } from '@/app/utils/cart';
 
 export type Props = {
   properties: (ProductProperty & {

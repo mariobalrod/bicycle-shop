@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Button } from '@/app/components/Button';
 import { Input } from '@/app/components/form/Input';
 import { Label } from '@/app/components/form/Label';
-import { paths } from '@/globals/paths';
+import { paths } from '@/app/utils/paths';
 export default function AdminAuthPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);

@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { Label } from '@/app/components/form/Label';
 import { RadioGroup, RadioGroupItem } from '@/app/components/form/RadioGroup';
-import { ConfigurationOption } from '@/app/store/cart';
+import { ConfigurationOption } from '@/app/utils/cart';
 
 import { Props } from './types';
 

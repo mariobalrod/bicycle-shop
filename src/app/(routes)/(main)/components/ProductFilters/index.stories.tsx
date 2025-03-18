@@ -2,16 +2,16 @@
 import { ProductType } from '@prisma/client';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Filters } from '.';
+import { ProductFilters } from '.';
 
 const meta = {
-  title: 'Products/Filters',
-  component: Filters,
+  title: 'Main/Products/Filters',
+  component: ProductFilters,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof Filters>;
+} satisfies Meta<typeof ProductFilters>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

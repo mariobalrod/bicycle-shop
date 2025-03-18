@@ -4,12 +4,11 @@ import Link from 'next/link';
 import { useCallback } from 'react';
 import { toast } from 'sonner';
 
+import { CartItem } from '@/app/(routes)/(main)/components/CartItem';
+import { CartSummary } from '@/app/(routes)/(main)/components/CartSummary';
 import { Button } from '@/app/components/Button';
-import { useCartStore } from '@/app/store/cart';
-import { paths } from '@/globals/paths';
-
-import { CartItem } from './components/CartItem';
-import { CartSummary } from './components/CartSummary';
+import { useCartStore } from '@/app/utils/cart';
+import { paths } from '@/app/utils/paths';
 
 export default function CartPage() {
   const items = useCartStore((state) => state.items);
