@@ -3,6 +3,7 @@
 import { ProductType } from '@prisma/client';
 import { useState } from 'react';
 
+import { Skeleton } from '@/app/components/Skeleton';
 import { apiClient } from '@/server/trpc';
 
 import { Card } from './components/Card';
@@ -52,27 +53,25 @@ export default function Products() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {products.map(({ category, ...product }) => (
-          <Card
-            key={product.id}
-            {...product}
-            category={category.name}
-            slug={product.slug}
-          />
-        ))}
+        {isLoading ? (
+          Array.from({ length: 8 }).map((_, index) => (
+            <Skeleton key={index} className="h-full w-full min-h-[400px]" />
+          ))
+        ) : products.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500">No products found</p>
+          </div>
+        ) : (
+          products.map(({ category, ...product }) => (
+            <Card
+              key={product.id}
+              {...product}
+              category={category.name}
+              slug={product.slug}
+            />
+          ))
+        )}
       </div>
-
-      {products.length === 0 && !isLoading && (
-        <div className="text-center py-12">
-          <p className="text-gray-500">No products found</p>
-        </div>
-      )}
-
-      {isLoading && (
-        <div className="text-center py-12">
-          <p className="text-gray-500">Loading...</p>
-        </div>
-      )}
     </div>
   );
 }

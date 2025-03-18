@@ -9,4 +9,5 @@ export type Props = {
   hasStock: boolean;
   category: string;
   slug: string;
+  className?: string;
 };

@@ -15,11 +15,16 @@ export function Card({
   hasStock,
   category,
   slug,
+  className,
 }: Props) {
   return (
     <Link
       href={paths.products.details(slug)}
-      className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition-all hover:shadow-lg"
+      className={clsx(
+        'group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition-all hover:shadow-lg',
+        !hasStock && 'opacity-50 pointer-events-none',
+        className,
+      )}
     >
       <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden bg-gray-200">
         <img
