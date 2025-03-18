@@ -1,8 +1,10 @@
+import { Edit } from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/app/components/Button';
 import { apiServer } from '@/server/trpc/server';
 
+import { Delete } from '../components/DeleteCategory';
 import {
   Table,
   TableBody,
@@ -46,13 +48,13 @@ export default async function CategoriesPage() {
               <TableCell>{category.name}</TableCell>
               <TableCell>{category.description}</TableCell>
               <TableCell>{category.products.length}</TableCell>
-              <TableCell className="text-right">
-                <Link
-                  href={`/admin/categories/${category.id}`}
-                  className="text-indigo-600 hover:text-indigo-900"
-                >
-                  Edit
+              <TableCell className="text-right space-x-2">
+                <Link href={`/admin/products/${category.id}`}>
+                  <Button size="icon" variant="outline">
+                    <Edit />
+                  </Button>
                 </Link>
+                <Delete id={category.id} />
               </TableCell>
             </TableRow>
           ))}

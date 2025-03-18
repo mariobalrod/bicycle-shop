@@ -1,10 +1,12 @@
 import clsx from 'clsx';
+import { Edit } from 'lucide-react';
 import Link from 'next/link';
 
 import { Badge } from '@/app/components/Badge';
 import { Button } from '@/app/components/Button';
 import { apiServer } from '@/server/trpc/server';
 
+import { Delete } from '../components/DeleteProduct';
 import {
   Table,
   TableBody,
@@ -15,7 +17,7 @@ import {
 } from '../components/Table';
 
 export default async function AdminPage() {
-  const products = await apiServer.product.getAll({});
+  const products = await apiServer.product.getAll();
 
   return (
     <div className="flex flex-col gap-6">
@@ -72,13 +74,13 @@ export default async function AdminPage() {
                   {product.isActive ? 'In stock' : 'Out of stock'}
                 </Badge>
               </TableCell>
-              <TableCell className="text-right">
-                <Link
-                  href={`/admin/products/${product.id}`}
-                  className="text-indigo-600 hover:text-indigo-900"
-                >
-                  Edit
+              <TableCell className="text-right space-x-2">
+                <Link href={`/admin/products/${product.id}`}>
+                  <Button size="icon" variant="outline">
+                    <Edit />
+                  </Button>
                 </Link>
+                <Delete id={product.id} />
               </TableCell>
             </TableRow>
           ))}

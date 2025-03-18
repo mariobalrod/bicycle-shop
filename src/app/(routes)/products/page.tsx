@@ -16,7 +16,7 @@ export default function Products() {
   const [sorting, setSorting] = useState<Sorting>('createdAt-desc');
 
   const { data: products = [], isLoading: isLoadingProducts } =
-    apiClient.product.getAll.useQuery({
+    apiClient.product.list.useQuery({
       sortBy: sorting.split('-')[0] as 'name' | 'createdAt' | 'price',
       sortOrder: sorting.split('-')[1] as 'asc' | 'desc',
       type,

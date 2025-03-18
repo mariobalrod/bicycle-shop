@@ -4,6 +4,8 @@ import { type Metadata } from 'next';
 import { inter } from '@/app/styles/fonts';
 import { TRPCReactProvider } from '@/server/trpc';
 
+import { Toaster } from '../components/Toast';
+
 export const metadata: Metadata = {
   title: 'Bicycle Shop',
   description: 'Description of the Bicycle Shop',
@@ -18,7 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          {children}
+          <Toaster />
+        </TRPCReactProvider>
       </body>
     </html>
   );

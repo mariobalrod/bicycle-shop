@@ -8,7 +8,18 @@ import {
 } from '@/server/api/trpc';
 
 export const productRouter = createTRPCRouter({
-  getAll: publicProcedure
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db.product.findMany({
+      include: {
+        category: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }),
+
+  list: publicProcedure
     .input(
       z.object({
         limit: z.number().optional(),
