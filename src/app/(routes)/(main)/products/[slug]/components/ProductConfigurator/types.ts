@@ -1,4 +1,6 @@
-import { ProductProperty, ProductPropertyOption } from '@prisma/client';
+import { ProductPropertyOption, type ProductProperty } from '@prisma/client';
+
+import { ConfigurationOption } from '@/app/store/cart';
 
 export type Props = {
   properties: (ProductProperty & {
@@ -7,6 +9,8 @@ export type Props = {
       incompatibleWithMe: ProductPropertyOption[];
     })[];
   })[];
-  onConfigurationChange: (configuration: Record<string, string>) => void;
+  onConfigurationChange: (
+    configuration: Record<string, ConfigurationOption>,
+  ) => void;
   disabled?: boolean;
 };

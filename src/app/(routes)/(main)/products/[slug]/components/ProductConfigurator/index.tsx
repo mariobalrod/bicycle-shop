@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { Label } from '@/app/components/form/Label';
 import { RadioGroup, RadioGroupItem } from '@/app/components/form/RadioGroup';
+import { ConfigurationOption } from '@/app/store/cart';
 
 import { Props } from './types';
 
@@ -13,7 +14,7 @@ export function ProductConfigurator({
   disabled = false,
 }: Props) {
   const [selectedOptions, setSelectedOptions] = useState<
-    Record<string, string>
+    Record<string, ConfigurationOption>
   >({});
 
   // Helper function to check if an option is incompatible with current selection
@@ -23,7 +24,9 @@ export function ProductConfigurator({
       incompatibleWithMe: ProductPropertyOption[];
     },
   ) => {
-    const selectedOptionIds = Object.values(selectedOptions);
+    const selectedOptionIds = Object.values(selectedOptions).map(
+      (opt) => opt.id,
+    );
     return option.incompatibleWith.some((incompatible) =>
       selectedOptionIds.includes(incompatible.id),
     );
@@ -39,10 +42,19 @@ export function ProductConfigurator({
     return !option.hasStock || isOptionIncompatible(option);
   };
 
-  const handleOptionSelect = (propertyId: string, optionId: string) => {
+  const handleOptionSelect = (
+    propertyId: string,
+    optionId: string,
+    propertyName: string,
+    optionName: string,
+  ) => {
     const newSelectedOptions = {
       ...selectedOptions,
-      [propertyId]: optionId,
+      [propertyId]: {
+        id: optionId,
+        name: optionName,
+        propertyName,
+      },
     };
     setSelectedOptions(newSelectedOptions);
     onConfigurationChange(newSelectedOptions);
@@ -60,14 +72,25 @@ export function ProductConfigurator({
           <div key={property.id} className="flex flex-col gap-3">
             <Label className="text-base font-semibold">{property.name}</Label>
             <RadioGroup
-              value={selectedOptions[property.id] ?? ''}
-              onValueChange={(value) => handleOptionSelect(property.id, value)}
+              value={selectedOptions[property.id]?.id ?? ''}
+              onValueChange={(value) => {
+                const option = property.options.find((opt) => opt.id === value);
+                if (option) {
+                  handleOptionSelect(
+                    property.id,
+                    option.id,
+                    property.name,
+                    option.name,
+                  );
+                }
+              }}
               disabled={disabled}
               className="grid grid-cols-1 sm:grid-cols-2 gap-3"
             >
               {property.options.map((option) => {
                 const isUnavailable = isOptionUnavailable(option);
-                const isSelected = selectedOptions[property.id] === option.id;
+                const isSelected =
+                  selectedOptions[property.id]?.id === option.id;
 
                 return (
                   <div

@@ -4,11 +4,22 @@ import { UserRole } from '@prisma/client';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 
+import { Badge } from '@/app/components/Badge';
 import { Button } from '@/app/components/Button';
+import { useCartStore } from '@/app/store/cart';
 import { paths } from '@/globals/paths';
 
 export function Header({ role }: { role?: UserRole }) {
+  const [mounted, setMounted] = useState(false);
+  const totalItems = useCartStore((state) => state.getTotalItems());
+
+  // Hydration handling
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <header className="border-b border-gray-200 bg-white">
       <div className="container mx-auto px-4">
@@ -52,7 +63,7 @@ export function Header({ role }: { role?: UserRole }) {
               </Link>
             )}
 
-            <Link href={paths.cart}>
+            <Link href={paths.cart} className="relative">
               <Button
                 type="button"
                 variant="outline"
@@ -62,6 +73,11 @@ export function Header({ role }: { role?: UserRole }) {
                 <ShoppingCart className="h-6 w-6" />
                 <span className="sr-only">Cart</span>
               </Button>
+              {mounted && totalItems > 0 && (
+                <Badge className="absolute -top-2 -right-2 !bg-primary !text-white h-5 w-5 flex items-center justify-center rounded-full p-0 text-xs">
+                  {totalItems}
+                </Badge>
+              )}
             </Link>
           </div>
         </div>

@@ -1,10 +1,14 @@
 'use client';
 
 import clsx from 'clsx';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { Badge } from '@/app/components/Badge';
 import { Button } from '@/app/components/Button';
+import { ConfigurationOption, useCartStore } from '@/app/store/cart';
+import { paths } from '@/globals/paths';
 import { apiClient } from '@/server/trpc';
 
 import { ProductConfigurator } from './components/ProductConfigurator';
@@ -14,16 +18,42 @@ export default function ProductDetailPage({
 }: {
   params: { slug: string };
 }) {
+  const router = useRouter();
   const [selectedConfiguration, setSelectedConfiguration] = useState<
-    Record<string, string>
+    Record<string, ConfigurationOption>
   >({});
 
   const { data: product, isLoading } = apiClient.product.getBySlug.useQuery({
     slug: params.slug,
   });
 
+  const addToCart = useCartStore((state) => state.addItem);
+
   const handleAddToCart = () => {
-    alert(`Selected configuration: ${JSON.stringify(selectedConfiguration)}`);
+    if (!product) return;
+
+    // Transform the configuration to the format expected by the cart
+    const cartConfiguration = Object.entries(selectedConfiguration).reduce<
+      Record<string, ConfigurationOption>
+    >((acc, [propertyId, option]) => {
+      acc[propertyId] = {
+        id: option.id,
+        name: option.name,
+        propertyName: option.propertyName,
+      };
+      return acc;
+    }, {});
+
+    addToCart({
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      configuration: cartConfiguration,
+    });
+
+    router.push(paths.cart);
+    toast.success('Product added to cart');
   };
 
   const isConfigurationComplete =
