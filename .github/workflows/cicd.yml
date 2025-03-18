@@ -106,5 +106,8 @@ jobs:
           pnpm install --no-frozen-lockfile
           pnpm install
 
+      - name: 🗄️ Generate Database
+        run: pnpm db:generate
+
       - name: 🧪 Test
         run: pnpm test
