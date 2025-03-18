@@ -20,4 +20,5 @@ export const paths = {
     all: '/products',
     details: (slug: string) => `/products/${slug}`,
   },
+  cart: '/cart',
 };

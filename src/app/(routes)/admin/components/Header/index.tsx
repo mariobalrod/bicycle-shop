@@ -13,10 +13,16 @@ export function Header() {
         <div className="flex min-h-16 items-center justify-between">
           <div className="flex py-4 md:py-0 md:gap-6 items-start gap-2 md:items-center flex-col md:flex-row">
             <Link href={paths.admin.root}>
-              <span className="text-xl font-bold">My Store</span>
+              <span className="text-xl font-bold">Dashboard</span>
             </Link>
 
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-4 items-center mt-0.5">
+              <Link
+                href={paths.products.all}
+                className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"
+              >
+                My Store
+              </Link>
               <Link
                 href={paths.admin.products.all}
                 className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"

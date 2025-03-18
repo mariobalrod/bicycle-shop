@@ -1,6 +1,6 @@
 import { ProductType } from '@prisma/client';
 
-import { Sorting } from '@/app/(routes)/products/types';
+import { Sorting } from '@/app/(routes)/(main)/products/types';
 
 export type Props = {
   search: string;

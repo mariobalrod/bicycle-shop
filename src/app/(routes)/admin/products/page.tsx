@@ -125,7 +125,12 @@ export default function AdminPage() {
                 <TableCell>{product.name}</TableCell>
                 <TableCell>${product.price.toFixed(2)}</TableCell>
                 <TableCell>{product.category.name}</TableCell>
-                <TableCell>{product.type}</TableCell>
+                <TableCell>
+                  <Badge variant="secondary" className="!bg-white shadow-2xl">
+                    {product.type.charAt(0).toUpperCase() +
+                      product.type.slice(1).toLowerCase().replace('_', ' ')}
+                  </Badge>
+                </TableCell>
                 <TableCell>
                   <Badge
                     className={clsx(
