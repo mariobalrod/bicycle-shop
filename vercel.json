@@ -1,0 +1,16 @@
+{
+  "github": {
+    "silent": false
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "x-robots-tag",
+          "value": "noindex"
+        }
+      ]
+    }
+  ]
+}
