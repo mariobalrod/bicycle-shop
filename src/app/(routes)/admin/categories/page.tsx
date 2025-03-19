@@ -125,7 +125,8 @@ export default function CategoriesPage() {
                         </AlertDialogTitle>
                         <AlertDialogDescription>
                           This action cannot be undone. This will permanently
-                          delete from the database.
+                          delete from the database. This will also delete all
+                          products associated with this category.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>

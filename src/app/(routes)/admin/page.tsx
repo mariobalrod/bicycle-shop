@@ -1,3 +1,7 @@
+import { redirect } from 'next/navigation';
+
+import { paths } from '@/app/utils/paths';
+
 export default function AdminPage() {
-  return <div>Admin</div>;
+  redirect(paths.admin.products.all);
 }

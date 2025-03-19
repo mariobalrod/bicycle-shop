@@ -186,6 +186,7 @@ export function BasicDetails({ productId }: { productId: string }) {
             render={({ field }) => (
               <Select
                 value={field.value}
+                defaultValue={product.categoryId}
                 onValueChange={(value) => {
                   field.onChange({ target: { value } });
                 }}
@@ -219,6 +220,7 @@ export function BasicDetails({ productId }: { productId: string }) {
             render={({ field }) => (
               <Select
                 value={field.value}
+                defaultValue={product.type}
                 onValueChange={(value) => {
                   field.onChange({ target: { value } });
                 }}
@@ -253,6 +255,7 @@ export function BasicDetails({ productId }: { productId: string }) {
             render={({ field }) => (
               <Select
                 value={field.value?.toString()}
+                defaultValue={product.hasStock?.toString()}
                 onValueChange={(value) => {
                   field.onChange({
                     target: { value: value === 'true' },

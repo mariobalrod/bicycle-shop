@@ -92,7 +92,7 @@ export default function NewProductPage() {
             New Product
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-600">
-            Create a new product in your store.
+            Create a new product in your store. You can add properties later.
           </p>
         </div>
 

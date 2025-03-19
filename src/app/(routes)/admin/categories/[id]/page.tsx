@@ -3,7 +3,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -42,17 +42,26 @@ export default function CategoryDetailPage({
     },
   });
 
+  const defaultValues = useMemo(() => {
+    return {
+      name: category?.name ?? '',
+      description: category?.description ?? '',
+    };
+  }, [category]);
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema),
-    defaultValues: {
-      name: category?.name,
-      description: category?.description ?? '',
-    },
+    defaultValues,
   });
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
 
   const onSubmit = async (data: CategoryFormData) => {
     setIsLoading(true);

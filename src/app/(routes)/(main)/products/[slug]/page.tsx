@@ -1,6 +1,7 @@
 'use client';
 
 import clsx from 'clsx';
+import { Minus, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -18,6 +19,7 @@ export default function ProductDetailPage({
   params: { slug: string };
 }) {
   const router = useRouter();
+  const [quantity, setQuantity] = useState(1);
   const [selectedConfiguration, setSelectedConfiguration] = useState<
     Record<string, ConfigurationOption>
   >({});
@@ -27,6 +29,10 @@ export default function ProductDetailPage({
   });
 
   const addToCart = useCartStore((state) => state.addItem);
+
+  const handleQuantityChange = (delta: number) => {
+    setQuantity((prev) => Math.max(1, prev + delta));
+  };
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -51,6 +57,16 @@ export default function ProductDetailPage({
       configuration: cartConfiguration,
     });
 
+    for (let i = 1; i < quantity; i++) {
+      addToCart({
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        imageUrl: product.imageUrl,
+        configuration: cartConfiguration,
+      });
+    }
+
     router.push(paths.cart);
     toast.success('Product added to cart');
   };
@@ -61,10 +77,55 @@ export default function ProductDetailPage({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen">
-        <div className="container mx-auto">
-          <div className="text-center py-4">
-            <p className="text-gray-500">Loading...</p>
+      <div className="h-full">
+        <div className="container flex flex-col md:flex-row mx-auto gap-6 md:gap-12">
+          <div className="w-full h-full md:w-1/2">
+            <div className="w-full h-[500px] bg-gray-200 animate-pulse rounded-lg" />
+
+            <div className="flex items-center justify-between mt-3">
+              <div className="h-8 w-48 bg-gray-200 animate-pulse rounded" />
+              <div className="h-6 w-20 bg-gray-200 animate-pulse rounded-full" />
+            </div>
+
+            {/* Category and price skeleton */}
+            <div className="flex items-end justify-between mt-2">
+              <div className="flex items-center gap-4">
+                <div className="h-6 w-24 bg-gray-200 animate-pulse rounded-full" />
+                <div className="h-6 w-24 bg-gray-200 animate-pulse rounded-full" />
+              </div>
+              <div className="h-6 w-20 bg-gray-200 animate-pulse rounded" />
+            </div>
+
+            <div className="mt-6">
+              <div className="h-6 w-32 bg-gray-200 animate-pulse rounded mb-2" />
+              <div className="space-y-2">
+                <div className="h-4 w-full bg-gray-200 animate-pulse rounded" />
+                <div className="h-4 w-3/4 bg-gray-200 animate-pulse rounded" />
+                <div className="h-4 w-1/2 bg-gray-200 animate-pulse rounded" />
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full md:w-1/2">
+            <div className="space-y-6">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="space-y-4">
+                  <div className="h-6 w-32 bg-gray-200 animate-pulse rounded" />
+                  <div className="grid grid-cols-3 gap-2">
+                    {[1, 2, 3].map((j) => (
+                      <div
+                        key={j}
+                        className="h-10 bg-gray-200 animate-pulse rounded"
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 border-t pt-8">
+              <div className="h-12 w-full bg-gray-200 animate-pulse rounded" />
+            </div>
           </div>
         </div>
       </div>
@@ -141,7 +202,48 @@ export default function ProductDetailPage({
             </div>
           )}
 
-          <div className="mt-8 border-t pt-8">
+          <div
+            className={clsx(
+              !product.properties.length
+                ? 'border-t md:border-0 pt-8 md:pt-0'
+                : 'mt-8 border-t pt-8',
+            )}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-sm font-medium text-gray-700">
+                Quantity
+              </span>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => handleQuantityChange(-1)}
+                  disabled={
+                    quantity <= 1 ||
+                    !product.hasStock ||
+                    !isConfigurationComplete
+                  }
+                >
+                  <Minus className="h-4 w-4" />
+                  <span className="sr-only">Decrease quantity</span>
+                </Button>
+
+                <span className="w-8 text-center">{quantity}</span>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => handleQuantityChange(1)}
+                  disabled={!product.hasStock || !isConfigurationComplete}
+                >
+                  <Plus className="h-4 w-4" />
+                  <span className="sr-only">Increase quantity</span>
+                </Button>
+              </div>
+            </div>
+
             <Button
               onClick={handleAddToCart}
               disabled={!product.hasStock || !isConfigurationComplete}

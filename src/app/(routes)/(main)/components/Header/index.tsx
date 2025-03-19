@@ -24,24 +24,26 @@ export function Header({ role }: { role?: UserRole }) {
     <header className="border-b border-gray-200 bg-white">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex gap-6 items-end">
+          <div className="flex gap-2 md:gap-6 flex-wrap items-end">
             <Link href="/" className="text-xl font-bold text-gray-900">
               Bicycle Shop
             </Link>
-            {role === UserRole.ADMIN && (
+            <div className="flex gap-4 items-center mb-0.75">
+              {role === UserRole.ADMIN && (
+                <Link
+                  href={paths.admin.root}
+                  className="text-sm font-medium text-gray-500 hover:text-gray-700"
+                >
+                  Dashboard
+                </Link>
+              )}
               <Link
-                href={paths.admin.root}
-                className="text-sm mb-0.5 font-medium text-gray-500 hover:text-gray-700"
+                href={paths.products.all}
+                className="text-sm font-medium text-gray-500 hover:text-gray-700"
               >
-                Dashboard
+                Products
               </Link>
-            )}
-            <Link
-              href={paths.products.all}
-              className="text-sm mb-0.5 font-medium text-gray-500 hover:text-gray-700"
-            >
-              Products
-            </Link>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">
