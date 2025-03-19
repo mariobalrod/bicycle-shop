@@ -2,7 +2,7 @@
 CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'USER');
 
 -- CreateEnum
-CREATE TYPE "ProductType" AS ENUM ('BICYCLE', 'SKI', 'SURFBOARD', 'ROLLER_SKATE');
+CREATE TYPE "ProductType" AS ENUM ('BICYCLE', 'SKI', 'SURFBOARD', 'ROLLER_SKATE', 'ACCESSORY');
 
 -- CreateTable
 CREATE TABLE "User" (

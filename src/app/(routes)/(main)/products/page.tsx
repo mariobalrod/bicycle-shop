@@ -58,8 +58,14 @@ export default function Products() {
             <Skeleton key={index} className="h-full w-full min-h-[400px]" />
           ))
         ) : products.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500">No products found</p>
+          <div className="col-span-full flex flex-col items-center justify-center py-12">
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+              No products found
+            </h3>
+            <p className="text-gray-500 text-center max-w-md">
+              Try adjusting your search or filter criteria to find what
+              you&apos;re looking for
+            </p>
           </div>
         ) : (
           products.map(({ category, ...product }) => (

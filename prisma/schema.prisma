@@ -30,6 +30,7 @@ enum ProductType {
     SKI
     SURFBOARD
     ROLLER_SKATE
+    ACCESSORY
 }
 
 model Category {
