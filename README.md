@@ -124,6 +124,7 @@ Create a `.env` file with the following variables:
 ```bash
 # Database
 POSTGRES_URL="postgresql://postgres:123456@localhost:5432/postgres?schema=public"
+POSTGRES_URL_NON_POOLING="postgresql://postgres:123456@localhost:5432/postgres?schema=public"
 POSTGRES_HOST="localhost"
 POSTGRES_DATABASE="postgres"
 POSTGRES_PASSWORD="123456"
@@ -164,6 +165,12 @@ pnpm dev
 
 # Run Database Dashboard
 pnpm db:studio
+
+# Run Storybook
+pnpm storybook
+
+# Run tests
+pnpm test
 ```
 
 ## Project Structure
