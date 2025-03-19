@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "next dev",
     "start": "next start",
-    "build": "next build",
-    "storybook": "storybook dev -p 6006",
+    "build": "prisma migrate deploy && prisma generate && next build",
+    "build:local": "next build",
     "build:storybook": "storybook build",
+    "storybook": "storybook dev -p 6006",
     "db:generate": "prisma generate",
     "db:deploy": "prisma migrate deploy",
     "db:migrate": "prisma migrate dev",
